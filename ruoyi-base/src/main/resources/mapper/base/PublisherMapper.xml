@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.base.mapper.PublisherMapper">
+
+    <resultMap type="Publisher" id="PublisherResult">
+        <result property="publisherId"    column="publisher_id"    />
+        <result property="publisherName"    column="publisher_name"    />
+        <result property="publisherAddress"    column="publisher_address"    />
+    </resultMap>
+
+    <sql id="selectPublisherVo">
+        select publisher_id, publisher_name, publisher_address from publisher
+    </sql>
+
+    <select id="selectPublisherList" parameterType="Publisher" resultMap="PublisherResult">
+        <include refid="selectPublisherVo"/>
+        <where>
+            <if test="publisherName != null  and publisherName != ''"> and publisher_name like concat('%', #{publisherName}, '%')</if>
+            <if test="publisherAddress != null  and publisherAddress != ''"> and publisher_address = #{publisherAddress}</if>
+        </where>
+    </select>
+
+    <select id="selectPublisherByPublisherId" parameterType="Long" resultMap="PublisherResult">
+        <include refid="selectPublisherVo"/>
+        where publisher_id = #{publisherId}
+    </select>
+
+    <insert id="insertPublisher" parameterType="Publisher" useGeneratedKeys="true" keyProperty="publisherId">
+        insert into publisher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="publisherName != null and publisherName != ''">publisher_name,</if>
+            <if test="publisherAddress != null and publisherAddress != ''">publisher_address,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="publisherName != null and publisherName != ''">#{publisherName},</if>
+            <if test="publisherAddress != null and publisherAddress != ''">#{publisherAddress},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePublisher" parameterType="Publisher">
+        update publisher
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="publisherName != null and publisherName != ''">publisher_name = #{publisherName},</if>
+            <if test="publisherAddress != null and publisherAddress != ''">publisher_address = #{publisherAddress},</if>
+        </trim>
+        where publisher_id = #{publisherId}
+    </update>
+
+    <delete id="deletePublisherByPublisherId" parameterType="Long">
+        delete from publisher where publisher_id = #{publisherId}
+    </delete>
+
+    <delete id="deletePublisherByPublisherIds" parameterType="String">
+        delete from publisher where publisher_id in
+        <foreach item="publisherId" collection="array" open="(" separator="," close=")">
+            #{publisherId}
+        </foreach>
+    </delete>
+</mapper>

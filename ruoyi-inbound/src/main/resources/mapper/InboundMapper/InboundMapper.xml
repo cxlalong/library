@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.inbound.mapper.InboundMapper">
+
+    <resultMap type="Inbound" id="InboundResult">
+        <result property="inboundId"    column="inbound_id"    />
+        <result property="bookId"    column="book_id"    />
+        <result property="inboundTime"    column="inbound_time"    />
+        <result property="inboundHandler"    column="inbound_handler"    />
+        <result property="inboundBookStatu"    column="inbound_book_statu"    />
+        <result property="inboundStatu"    column="inbound_statu"    />
+        <result property="bookshelfId"    column="bookshelf_id"    />
+        <result property="inboundRemarks"    column="inbound_remarks"    />
+    </resultMap>
+
+    <sql id="selectInboundVo">
+        select inbound_id, book_id, inbound_time, inbound_handler, inbound_book_statu, inbound_statu, bookshelf_id, inbound_remarks from inbound
+    </sql>
+
+    <select id="selectInboundList" parameterType="Inbound" resultMap="InboundResult">
+        <include refid="selectInboundVo"/>
+        <where>
+            <if test="bookId != null "> and book_id = #{bookId}</if>
+            <if test="inboundTime != null "> and inbound_time = #{inboundTime}</if>
+            <if test="inboundHandler != null  and inboundHandler != ''"> and inbound_handler = #{inboundHandler}</if>
+            <if test="inboundBookStatu != null  and inboundBookStatu != ''"> and inbound_book_statu = #{inboundBookStatu}</if>
+            <if test="inboundStatu != null  and inboundStatu != ''"> and inbound_statu = #{inboundStatu}</if>
+            <if test="bookshelfId != null "> and bookshelf_id = #{bookshelfId}</if>
+            <if test="inboundRemarks != null  and inboundRemarks != ''"> and inbound_remarks = #{inboundRemarks}</if>
+        </where>
+    </select>
+
+    <select id="selectInboundByInboundId" parameterType="Long" resultMap="InboundResult">
+        <include refid="selectInboundVo"/>
+        where inbound_id = #{inboundId}
+    </select>
+
+    <insert id="insertInbound" parameterType="Inbound" useGeneratedKeys="true" keyProperty="inboundId">
+        insert into inbound
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookId != null">book_id,</if>
+            <if test="inboundTime != null">inbound_time,</if>
+            <if test="inboundHandler != null and inboundHandler != ''">inbound_handler,</if>
+            <if test="inboundBookStatu != null and inboundBookStatu != ''">inbound_book_statu,</if>
+            <if test="inboundStatu != null and inboundStatu != ''">inbound_statu,</if>
+            <if test="bookshelfId != null">bookshelf_id,</if>
+            <if test="inboundRemarks != null">inbound_remarks,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookId != null">#{bookId},</if>
+            <if test="inboundTime != null">#{inboundTime},</if>
+            <if test="inboundHandler != null and inboundHandler != ''">#{inboundHandler},</if>
+            <if test="inboundBookStatu != null and inboundBookStatu != ''">#{inboundBookStatu},</if>
+            <if test="inboundStatu != null and inboundStatu != ''">#{inboundStatu},</if>
+            <if test="bookshelfId != null">#{bookshelfId},</if>
+            <if test="inboundRemarks != null">#{inboundRemarks},</if>
+        </trim>
+    </insert>
+
+    <update id="updateInbound" parameterType="Inbound">
+        update inbound
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="inboundTime != null">inbound_time = #{inboundTime},</if>
+            <if test="inboundHandler != null and inboundHandler != ''">inbound_handler = #{inboundHandler},</if>
+            <if test="inboundBookStatu != null and inboundBookStatu != ''">inbound_book_statu = #{inboundBookStatu},</if>
+            <if test="inboundStatu != null and inboundStatu != ''">inbound_statu = #{inboundStatu},</if>
+            <if test="bookshelfId != null">bookshelf_id = #{bookshelfId},</if>
+            <if test="inboundRemarks != null">inbound_remarks = #{inboundRemarks},</if>
+        </trim>
+        where inbound_id = #{inboundId}
+    </update>
+
+    <delete id="deleteInboundByInboundId" parameterType="Long">
+        delete from inbound where inbound_id = #{inboundId}
+    </delete>
+
+    <delete id="deleteInboundByInboundIds" parameterType="String">
+        delete from inbound where inbound_id in
+        <foreach item="inboundId" collection="array" open="(" separator="," close=")">
+            #{inboundId}
+        </foreach>
+    </delete>
+</mapper>

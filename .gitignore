@@ -1,0 +1,10 @@
+# Project exclude paths
+/ruoyi-admin/target/
+/ruoyi-base/target/
+/ruoyi-borrow/target/
+/ruoyi-common/target/
+/ruoyi-framework/target/
+/ruoyi-generator/target/
+/ruoyi-inbound/target/
+/ruoyi-quartz/target/
+/ruoyi-system/target/

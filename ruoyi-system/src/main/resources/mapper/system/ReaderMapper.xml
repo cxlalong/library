@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ReaderMapper">
+
+    <resultMap type="Reader" id="ReaderResult">
+        <result property="readerId"    column="reader_id"    />
+        <result property="readerNo"    column="reader_no"    />
+        <result property="readerName"    column="reader_name"    />
+        <result property="readerPhone"    column="reader_phone"    />
+        <result property="readerEmail"    column="reader_email"    />
+        <result property="identity"    column="identity"    />
+    </resultMap>
+
+    <sql id="selectReaderVo">
+        select reader_id, reader_no, reader_name, reader_phone, reader_email, identity from reader
+    </sql>
+
+    <select id="selectReaderList" parameterType="Reader" resultMap="ReaderResult">
+        <include refid="selectReaderVo"/>
+        <where>
+            <if test="readerNo != null "> and reader_no = #{readerNo}</if>
+            <if test="readerName != null  and readerName != ''"> and reader_name like concat('%', #{readerName}, '%')</if>
+            <if test="readerPhone != null  and readerPhone != ''"> and reader_phone = #{readerPhone}</if>
+            <if test="readerEmail != null  and readerEmail != ''"> and reader_email = #{readerEmail}</if>
+            <if test="identity != null  and identity != ''"> and identity = #{identity}</if>
+        </where>
+    </select>
+
+    <select id="selectReaderByReaderId" parameterType="Long" resultMap="ReaderResult">
+        <include refid="selectReaderVo"/>
+        where reader_id = #{readerId}
+    </select>
+
+    <insert id="insertReader" parameterType="Reader" useGeneratedKeys="true" keyProperty="readerId">
+        insert into reader
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="readerNo != null">reader_no,</if>
+            <if test="readerName != null and readerName != ''">reader_name,</if>
+            <if test="readerPhone != null">reader_phone,</if>
+            <if test="readerEmail != null">reader_email,</if>
+            <if test="identity != null">identity,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="readerNo != null">#{readerNo},</if>
+            <if test="readerName != null and readerName != ''">#{readerName},</if>
+            <if test="readerPhone != null">#{readerPhone},</if>
+            <if test="readerEmail != null">#{readerEmail},</if>
+            <if test="identity != null">#{identity},</if>
+        </trim>
+    </insert>
+
+    <update id="updateReader" parameterType="Reader">
+        update reader
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="readerNo != null">reader_no = #{readerNo},</if>
+            <if test="readerName != null and readerName != ''">reader_name = #{readerName},</if>
+            <if test="readerPhone != null">reader_phone = #{readerPhone},</if>
+            <if test="readerEmail != null">reader_email = #{readerEmail},</if>
+            <if test="identity != null">identity = #{identity},</if>
+        </trim>
+        where reader_id = #{readerId}
+    </update>
+
+    <delete id="deleteReaderByReaderId" parameterType="Long">
+        delete from reader where reader_id = #{readerId}
+    </delete>
+
+    <delete id="deleteReaderByReaderIds" parameterType="String">
+        delete from reader where reader_id in
+        <foreach item="readerId" collection="array" open="(" separator="," close=")">
+            #{readerId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.base.mapper.BookshelfMapper">
+
+    <resultMap type="Bookshelf" id="BookshelfResult">
+        <result property="bookshelfId"    column="bookshelf_id"    />
+        <result property="bookshelfType"    column="bookshelf_type"    />
+        <result property="bookshelfAddress"    column="bookshelf_address"    />
+        <result property="bookshelfCapacity"    column="bookshelf_capacity"    />
+        <result property="bookshelfCordon"    column="bookshelf_cordon"    />
+    </resultMap>
+
+    <sql id="selectBookshelfVo">
+        select bookshelf_id, bookshelf_type, bookshelf_address, bookshelf_capacity, bookshelf_cordon from bookshelf
+    </sql>
+
+    <select id="selectBookshelfList" parameterType="Bookshelf" resultMap="BookshelfResult">
+        <include refid="selectBookshelfVo"/>
+        <where>
+            <if test="bookshelfType != null  and bookshelfType != ''"> and bookshelf_type = #{bookshelfType}</if>
+            <if test="bookshelfAddress != null  and bookshelfAddress != ''"> and bookshelf_address = #{bookshelfAddress}</if>
+            <if test="bookshelfCapacity != null "> and bookshelf_capacity = #{bookshelfCapacity}</if>
+            <if test="bookshelfCordon != null "> and bookshelf_cordon = #{bookshelfCordon}</if>
+        </where>
+    </select>
+
+    <select id="selectBookshelfByBookshelfId" parameterType="Long" resultMap="BookshelfResult">
+        <include refid="selectBookshelfVo"/>
+        where bookshelf_id = #{bookshelfId}
+    </select>
+
+    <insert id="insertBookshelf" parameterType="Bookshelf" useGeneratedKeys="true" keyProperty="bookshelfId">
+        insert into bookshelf
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookshelfType != null and bookshelfType != ''">bookshelf_type,</if>
+            <if test="bookshelfAddress != null and bookshelfAddress != ''">bookshelf_address,</if>
+            <if test="bookshelfCapacity != null">bookshelf_capacity,</if>
+            <if test="bookshelfCordon != null">bookshelf_cordon,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookshelfType != null and bookshelfType != ''">#{bookshelfType},</if>
+            <if test="bookshelfAddress != null and bookshelfAddress != ''">#{bookshelfAddress},</if>
+            <if test="bookshelfCapacity != null">#{bookshelfCapacity},</if>
+            <if test="bookshelfCordon != null">#{bookshelfCordon},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBookshelf" parameterType="Bookshelf">
+        update bookshelf
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookshelfType != null and bookshelfType != ''">bookshelf_type = #{bookshelfType},</if>
+            <if test="bookshelfAddress != null and bookshelfAddress != ''">bookshelf_address = #{bookshelfAddress},</if>
+            <if test="bookshelfCapacity != null">bookshelf_capacity = #{bookshelfCapacity},</if>
+            <if test="bookshelfCordon != null">bookshelf_cordon = #{bookshelfCordon},</if>
+        </trim>
+        where bookshelf_id = #{bookshelfId}
+    </update>
+
+    <delete id="deleteBookshelfByBookshelfId" parameterType="Long">
+        delete from bookshelf where bookshelf_id = #{bookshelfId}
+    </delete>
+
+    <delete id="deleteBookshelfByBookshelfIds" parameterType="String">
+        delete from bookshelf where bookshelf_id in
+        <foreach item="bookshelfId" collection="array" open="(" separator="," close=")">
+            #{bookshelfId}
+        </foreach>
+    </delete>
+</mapper>

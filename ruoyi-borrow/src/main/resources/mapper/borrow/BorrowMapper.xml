@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.borrow.mapper.BorrowMapper">
+
+    <resultMap type="Borrow" id="BorrowResult">
+        <result property="borrowId"    column="borrow_id"    />
+        <result property="readerNo"    column="reader_no"    />
+        <result property="inboundId"    column="inbound_id"    />
+        <result property="borrowTime"    column="borrow_time"    />
+        <result property="returnTime"    column="return_time"    />
+        <result property="borrowStatu"    column="borrow_statu"    />
+    </resultMap>
+
+    <sql id="selectBorrowVo">
+        select borrow_id, reader_no, inbound_id, borrow_time, return_time, borrow_statu from borrow
+    </sql>
+
+    <select id="selectBorrowList" parameterType="Borrow" resultMap="BorrowResult">
+        <include refid="selectBorrowVo"/>
+        <where>
+            <if test="readerNo != null "> and reader_no = #{readerNo}</if>
+            <if test="inboundId != null "> and inbound_id = #{inboundId}</if>
+            <if test="borrowTime != null "> and borrow_time = #{borrowTime}</if>
+            <if test="returnTime != null "> and return_time = #{returnTime}</if>
+            <if test="borrowStatu != null  and borrowStatu != ''"> and borrow_statu = #{borrowStatu}</if>
+        </where>
+    </select>
+
+    <select id="selectBorrowByBorrowId" parameterType="Long" resultMap="BorrowResult">
+        <include refid="selectBorrowVo"/>
+        where borrow_id = #{borrowId}
+    </select>
+
+    <insert id="insertBorrow" parameterType="Borrow" useGeneratedKeys="true" keyProperty="borrowId">
+        insert into borrow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="readerNo != null">reader_no,</if>
+            <if test="inboundId != null">inbound_id,</if>
+            <if test="borrowTime != null">borrow_time,</if>
+            <if test="returnTime != null">return_time,</if>
+            <if test="borrowStatu != null">borrow_statu,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="readerNo != null">#{readerNo},</if>
+            <if test="inboundId != null">#{inboundId},</if>
+            <if test="borrowTime != null">#{borrowTime},</if>
+            <if test="returnTime != null">#{returnTime},</if>
+            <if test="borrowStatu != null">#{borrowStatu},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBorrow" parameterType="Borrow">
+        update borrow
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="readerNo != null">reader_no = #{readerNo},</if>
+            <if test="inboundId != null">inbound_id = #{inboundId},</if>
+            <if test="borrowTime != null">borrow_time = #{borrowTime},</if>
+            <if test="returnTime != null">return_time = #{returnTime},</if>
+            <if test="borrowStatu != null">borrow_statu = #{borrowStatu},</if>
+        </trim>
+        where borrow_id = #{borrowId}
+    </update>
+
+    <delete id="deleteBorrowByBorrowId" parameterType="Long">
+        delete from borrow where borrow_id = #{borrowId}
+    </delete>
+
+    <delete id="deleteBorrowByBorrowIds" parameterType="String">
+        delete from borrow where borrow_id in
+        <foreach item="borrowId" collection="array" open="(" separator="," close=")">
+            #{borrowId}
+        </foreach>
+    </delete>
+</mapper>
